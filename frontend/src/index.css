@@ -104,11 +104,9 @@
    Base Styles
    ============================================ */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* Se elimina el reseteo manual de márgenes (* { margin: 0; padding: 0; }) ya que 
+   colisionaba con las clases de Tailwind como space-y-* y paddings condicionales.
+   Tailwind incluye su propio preflight de reseteo base. */
 
 body {
   font-family: var(--font-sans);

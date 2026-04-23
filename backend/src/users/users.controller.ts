@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Post,
   Patch,
   Delete,
   Param,
@@ -19,12 +20,12 @@ import {
 } from '@nestjs/swagger';
 import { Request } from 'express';
 import { UsersService } from './users.service';
-import { UpdateUserDto, UpdateRoleDto } from './dto';
+import { UpdateUserDto, UpdateRoleDto, CreateUserDto } from './dto';
 import { JwtAuthGuard, RolesGuard } from '../auth/guards';
 import { Roles, GetUser } from '../auth/decorators';
 import { Role } from '../common/enums';
 
-@ApiTags('👥 Usuarios (Admin)')
+@ApiTags('Usuarios (Admin)')
 @ApiBearerAuth('JWT-Auth')
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard) // Todas las rutas requieren autenticación
@@ -63,6 +64,31 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'No autenticado — Token JWT inválido o ausente' })
   findAll() {
     return this.usersService.findAll();
+  }
+
+  /**
+   * POST /users
+   * Crea un nuevo usuario manualmente por un Admin.
+   */
+  @Post()
+  @Roles(Role.ADMIN)
+  @ApiOperation({
+    summary: 'Crear usuario (Solo ADMIN)',
+    description: 'Permite al administrador crear un usuario y asignarle un rol específico.',
+  })
+  @ApiBody({ type: CreateUserDto })
+  @ApiResponse({ status: 201, description: 'Usuario creado exitosamente' })
+  @ApiResponse({ status: 400, description: 'Datos inválidos' })
+  @ApiResponse({ status: 401, description: 'No autenticado' })
+  @ApiResponse({ status: 403, description: 'Acceso denegado' })
+  @ApiResponse({ status: 409, description: 'El correo electrónico ya está registrado' })
+  create(
+    @Body() createUserDto: CreateUserDto,
+    @GetUser('userId') adminUserId: string,
+    @Req() req: Request,
+  ) {
+    const ipAddress = req.ip || req.socket.remoteAddress || null;
+    return this.usersService.create(createUserDto, adminUserId, ipAddress);
   }
 
   /**
@@ -130,7 +156,7 @@ export class UsersController {
   @Patch(':id/role')
   @Roles(Role.ADMIN)
   @ApiOperation({
-    summary: '🔒 Cambiar rol de usuario (Solo ADMIN)',
+    summary: 'Cambiar rol de usuario (Solo ADMIN)',
     description:
       'Permite al administrador cambiar el rol de un usuario entre USER y ADMIN. ' +
       'Esta acción queda registrada en el log de auditoría.',
@@ -162,7 +188,7 @@ export class UsersController {
   @Delete(':id')
   @Roles(Role.ADMIN)
   @ApiOperation({
-    summary: '🔒 Eliminar usuario (Solo ADMIN)',
+    summary: 'Eliminar usuario (Solo ADMIN)',
     description:
       'Elimina un usuario del sistema permanentemente. ' +
       'Las tareas asociadas se eliminan en cascada. ' +

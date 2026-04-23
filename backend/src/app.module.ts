@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { TasksModule } from './tasks/tasks.module';
 import { AuditModule } from './audit/audit.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 import { databaseConfig, jwtConfig } from './config';
 
 // Entities
@@ -46,6 +47,7 @@ import { AuditLog } from './audit/entities/audit-log.entity';
     UsersModule,
     TasksModule,
     AuditModule,
+    DashboardModule,
   ],
 })
 export class AppModule {}

@@ -16,7 +16,7 @@ import { Request } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto, LoginDto } from './dto';
 
-@ApiTags('🔐 Autenticación')
+@ApiTags('Autenticación')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

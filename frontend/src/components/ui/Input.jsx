@@ -25,21 +25,20 @@ export default function Input({
   ...extraProps
 }) {
   return (
-    <div className="space-y-1.5">
+    <div className="flex flex-col gap-2 w-full">
       {label && (
         <label
           htmlFor={id}
-          className="block text-sm font-medium text-light-300 ml-1"
+          className="text-sm font-semibold text-white ml-1"
         >
           {label}
         </label>
       )}
 
-      <div className="relative group">
+      <div className="relative flex items-center">
         {icon && (
-          <span
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-light-400 
-                       group-focus-within:text-primary-light transition-colors duration-300"
+          <div
+            className="absolute left-4 text-[var(--color-light-400)] pointer-events-none"
             aria-hidden="true"
             dangerouslySetInnerHTML={{ __html: icon }}
           />
@@ -53,16 +52,16 @@ export default function Input({
           placeholder={placeholder}
           disabled={disabled}
           className={`
-            w-full rounded-xl border bg-dark-700/50 px-4 py-3
-            text-light-100 placeholder-light-400/50
-            transition-all duration-300 ease-out
-            focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary
-            hover:border-light-400/30
+            w-full rounded-xl border bg-[#1e293b]/60 px-4 py-3.5
+            text-white placeholder-[var(--color-light-500)]
+            transition-all duration-300
+            focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]
+            hover:border-[var(--color-light-400)]/30 backdrop-blur-sm
             disabled:opacity-50 disabled:cursor-not-allowed
             ${icon ? 'pl-11' : ''}
             ${error
-              ? 'border-danger/50 focus:ring-danger/50 focus:border-danger'
-              : 'border-light-400/10'
+              ? 'border-[var(--color-danger)]/50 focus:ring-[var(--color-danger)]/50 focus:border-[var(--color-danger)]'
+              : 'border-[var(--color-dark-600)]'
             }
           `}
           {...extraProps}
@@ -70,7 +69,7 @@ export default function Input({
       </div>
 
       {error && (
-        <p className="text-danger text-xs ml-1 animate-slide-down" role="alert">
+        <p className="text-[var(--color-danger)] text-sm ml-1 font-medium animate-slide-down" role="alert">
           {error}
         </p>
       )}

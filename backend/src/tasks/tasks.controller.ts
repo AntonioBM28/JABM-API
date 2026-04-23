@@ -22,10 +22,10 @@ import { Request } from 'express';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto, UpdateTaskDto } from './dto';
 import { JwtAuthGuard, RolesGuard } from '../auth/guards';
-import { GetUser } from '../auth/decorators';
+import { GetUser, Roles } from '../auth/decorators';
 import { Role } from '../common/enums';
 
-@ApiTags('📋 Tareas')
+@ApiTags('Tareas')
 @ApiBearerAuth('JWT-Auth')
 @Controller('tasks')
 @UseGuards(JwtAuthGuard, RolesGuard) // Todas las rutas requieren autenticación
@@ -38,7 +38,7 @@ export class TasksController {
    */
   @Post()
   @ApiOperation({
-    summary: '🔒 Crear nueva tarea (Solo ADMIN)',
+    summary: 'Crear nueva tarea (Solo ADMIN)',
     description:
       'Crea una nueva tarea y la asigna al usuario autenticado. ' +
       'El userId se obtiene automáticamente del token JWT (prevención de IDOR). ' +
@@ -65,8 +65,9 @@ export class TasksController {
   create(
     @Body() createTaskDto: CreateTaskDto,
     @GetUser('userId') userId: string,
+    @GetUser('role') role: Role,
   ) {
-    return this.tasksService.create(createTaskDto, userId);
+    return this.tasksService.create(createTaskDto, userId, role);
   }
 
   /**
@@ -103,6 +104,23 @@ export class TasksController {
   }
 
   /**
+   * GET /tasks/all
+   * Obtiene todas las tareas del sistema (Solo ADMIN).
+   */
+  @Get('all')
+  @Roles(Role.ADMIN)
+  @ApiOperation({
+    summary: 'Listar todas las tareas (Solo ADMIN)',
+    description: 'Retorna todas las tareas de todos los usuarios registrados en el sistema.',
+  })
+  @ApiResponse({ status: 200, description: 'Lista de todas las tareas devuelta exitosamente.' })
+  @ApiResponse({ status: 401, description: 'No autenticado' })
+  @ApiResponse({ status: 403, description: 'Acceso denegado — Solo ADMIN' })
+  findAllAll() {
+    return this.tasksService.findAllAll();
+  }
+
+  /**
    * GET /tasks/:id
    * Obtiene una tarea con verificación de propiedad.
    */
@@ -136,7 +154,7 @@ export class TasksController {
    */
   @Patch(':id')
   @ApiOperation({
-    summary: '🔒 Actualizar tarea (Solo ADMIN)',
+    summary: 'Actualizar tarea (Solo ADMIN)',
     description:
       'Actualiza los datos de una tarea existente (título, descripción, estado). ' +
       'Verificación de propiedad: solo el dueño o un ADMIN pueden modificar.',
@@ -167,7 +185,7 @@ export class TasksController {
    */
   @Delete(':id')
   @ApiOperation({
-    summary: '🔒 Eliminar tarea (Solo ADMIN)',
+    summary: 'Eliminar tarea (Solo ADMIN)',
     description:
       'Elimina una tarea permanentemente. ' +
       'Solo el dueño o un ADMIN pueden eliminarla. ' +

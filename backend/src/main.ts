@@ -54,7 +54,7 @@ async function bootstrap() {
       '**ADMIN** — Gestión completa: CRUD de usuarios, asignación/gestión de tareas y consulta de auditoría.\n\n' +
       '**USER** — Consulta únicamente sus tareas asignadas.\n\n' +
       '## Autenticación\n\n' +
-      'Usa el botón **Authorize** 🔒 e ingresa tu token JWT con el formato: `Bearer <tu_token>`',
+      'Usa el botón **Authorize** e ingresa tu token JWT con el formato: `Bearer <tu_token>`',
     )
     .setVersion('1.0')
     .addBearerAuth(
@@ -68,10 +68,10 @@ async function bootstrap() {
       },
       'JWT-Auth',
     )
-    .addTag('🔐 Autenticación', 'Registro e inicio de sesión — Acceso público')
-    .addTag('👥 Usuarios (Admin)', 'CRUD de usuarios — Solo ADMIN')
-    .addTag('📋 Tareas', 'Gestión de tareas — ADMIN: CRUD completo | USER: Solo lectura de sus tareas')
-    .addTag('📊 Auditoría (Admin)', 'Consulta de logs de seguridad — Solo ADMIN')
+    .addTag('Autenticación', 'Registro e inicio de sesión — Acceso público')
+    .addTag('Usuarios (Admin)', 'CRUD de usuarios — Solo ADMIN')
+    .addTag('Tareas', 'Gestión de tareas — ADMIN: CRUD completo | USER: Solo lectura de sus tareas')
+    .addTag('Auditoría (Admin)', 'Consulta de logs de seguridad — Solo ADMIN')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -101,9 +101,9 @@ async function bootstrap() {
   // ========================================
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  logger.log(`🚀 Servidor corriendo en: http://localhost:${port}`);
-  logger.log(`📚 Swagger UI disponible en: http://localhost:${port}/api/docs`);
-  logger.log(`📍 Entorno: ${process.env.NODE_ENV || 'development'}`);
+  logger.log(`Servidor corriendo en: http://localhost:${port}`);
+  logger.log(`Swagger UI disponible en: http://localhost:${port}/api/docs`);
+  logger.log(`Entorno: ${process.env.NODE_ENV || 'development'}`);
 }
 
 bootstrap();

@@ -72,9 +72,9 @@ export default function Login() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6" noValidate>
             
-            <div className="space-y-4">
+            <div className="flex flex-col gap-5 w-full">
               <Input
                 id="email"
                 type="email"
@@ -86,7 +86,7 @@ export default function Login() {
                 disabled={isLoading}
               />
 
-              <div className="relative">
+              <div className="relative w-full">
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
@@ -100,7 +100,7 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-[38px] text-light-400 hover:text-light-100 transition-colors focus:outline-none"
+                  className="absolute right-4 bottom-[14px] text-[var(--color-light-400)] hover:text-white transition-colors focus:outline-none flex items-center justify-center p-1"
                   dangerouslySetInnerHTML={{ __html: showPassword ? ICONS.eyeOff : ICONS.eye }}
                   aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                 />
@@ -108,7 +108,7 @@ export default function Login() {
             </div>
 
             {error && (
-              <div className="flex items-center gap-2 text-danger bg-danger/10 p-3 rounded-xl text-sm border border-danger/20 animate-shake">
+              <div className="flex items-center gap-2 text-[var(--color-danger)] bg-[var(--color-danger)]/10 p-3 rounded-xl text-sm border border-[var(--color-danger)]/20 animate-shake">
                 <span dangerouslySetInnerHTML={{ __html: ICONS.alertCircle }}></span>
                 <p>{error}</p>
               </div>

@@ -26,10 +26,12 @@ export class TasksService {
    * El userId se asigna automáticamente desde el JWT,
    * NUNCA desde el body del request (prevención de IDOR).
    */
-  async create(createTaskDto: CreateTaskDto, userId: string): Promise<Task> {
+  async create(createTaskDto: CreateTaskDto, userId: string, role: Role): Promise<Task> {
+    const assignToUserId = (role === Role.ADMIN && createTaskDto.userId) ? createTaskDto.userId : userId;
+    
     const task = this.taskRepository.create({
       ...createTaskDto,
-      userId, // Asignado desde el token JWT, no del body
+      userId: assignToUserId,
     });
 
     const savedTask = await this.taskRepository.save(task);
@@ -45,6 +47,15 @@ export class TasksService {
   async findAllByUser(userId: string): Promise<Task[]> {
     return this.taskRepository.find({
       where: { userId },
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  /**
+   * Obtener todas las tareas (Solo ADMIN)
+   */
+  async findAllAll(): Promise<Task[]> {
+    return this.taskRepository.find({
       order: { createdAt: 'DESC' },
     });
   }

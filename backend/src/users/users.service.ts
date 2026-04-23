@@ -8,7 +8,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { UpdateUserDto, UpdateRoleDto } from './dto';
+import { UpdateUserDto, UpdateRoleDto, CreateUserDto } from './dto';
+import * as argon2 from 'argon2';
 import { AuditService } from '../audit/audit.service';
 import { AuditSeverity, Role } from '../common/enums';
 
@@ -30,6 +31,39 @@ export class UsersService {
     return this.userRepository.find({
       order: { name: 'ASC' },
     });
+  }
+
+  /**
+   * Crear un nuevo usuario (ADMIN)
+   */
+  async create(createUserDto: CreateUserDto, adminUserId: string, ipAddress: string | null): Promise<User> {
+    const { email, password, name, role } = createUserDto;
+
+    const existingUser = await this.userRepository.findOne({ where: { email } });
+    if (existingUser) {
+      throw new ConflictException('El email ya está en uso');
+    }
+
+    const hashedPassword = await argon2.hash(password);
+    const user = this.userRepository.create({
+      name,
+      email,
+      password: hashedPassword,
+      role: role || Role.USER,
+    });
+
+    const savedUser = await this.userRepository.save(user);
+
+    await this.auditService.log({
+      userId: adminUserId,
+      action: 'USER_REGISTERED',
+      severity: AuditSeverity.INFO,
+      details: `Usuario creado manualmente: ${email} con rol ${savedUser.role} por admin ${adminUserId}`,
+      ipAddress,
+    });
+
+    this.logger.log(`Usuario creado por admin: ${email}`);
+    return savedUser;
   }
 
   /**

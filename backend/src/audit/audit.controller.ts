@@ -13,7 +13,7 @@ import { Roles } from '../auth/decorators';
 import { Role } from '../common/enums';
 import { AuditSeverity } from '../common/enums';
 
-@ApiTags('📊 Auditoría (Admin)')
+@ApiTags('Auditoría (Admin)')
 @ApiBearerAuth('JWT-Auth')
 @Controller('audit')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -29,7 +29,7 @@ export class AuditController {
   @Get()
   @Roles(Role.ADMIN)
   @ApiOperation({
-    summary: '🔒 Consultar logs de auditoría (Solo ADMIN)',
+    summary: 'Consultar logs de auditoría (Solo ADMIN)',
     description:
       'Retorna los registros de auditoría del sistema con filtros opcionales. ' +
       'Registra eventos como: login exitoso/fallido, creación/eliminación de usuarios, ' +
